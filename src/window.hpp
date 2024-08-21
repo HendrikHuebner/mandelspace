@@ -6,11 +6,12 @@
 #include <cuda_gl_interop.h>
 #include <iostream>
 #include <vector>
+#include "fractal.hpp"
 
-extern void cudaDraw(struct cudaGraphicsResource* d_data, int width, int height);
+extern void cudaDraw(Fractal frac, struct cudaGraphicsResource* d_data, int width, int height);
 
-int windowWidth = 512;
-int windowHeight = 512;
+int windowWidth = 1024;
+int windowHeight = 1024;
 
 void initPBO(GLuint *pbo) {
     glGenBuffers(1, pbo);
@@ -51,7 +52,7 @@ void teardownWindow(GLFWwindow *window) {
 }
 
 
-int renderLoop() {
+int renderLoop(Fractal frac) {
     GLFWwindow *window;
 
     if (initWindow(&window)) {
@@ -65,10 +66,23 @@ int renderLoop() {
     cudaGraphicsGLRegisterBuffer(&pboCuda, pbo, cudaGraphicsMapFlagsWriteDiscard);
 
     // Main loop
-    while (!glfwWindowShouldClose(window)) {
-        cudaDraw(pboCuda, windowWidth, windowHeight);
+    int frameCount = 0;
+    double prevTime = glfwGetTime();
 
+    while (!glfwWindowShouldClose(window)) {
+
+        cudaDraw(frac, pboCuda, windowWidth, windowHeight);
         display(pbo);
+
+        frameCount++;
+        double currentTime = glfwGetTime();
+
+        if (currentTime - prevTime >= 1.0) {
+            double fps = frameCount / (currentTime - prevTime);
+            std::cout << "FPS: " << fps << std::endl;
+            prevTime = currentTime;
+            frameCount = 0;
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();

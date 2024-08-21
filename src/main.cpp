@@ -1,12 +1,14 @@
 #include "util/Config.hpp"
 #include <cstdlib>
 #include <iostream>
-#include "core/mandelbrot.hpp"
+#include "window.hpp"
+#include "fractal.hpp"
 
 int main() {
     Config cfg("../settings.cfg");
 
-    renderLoop();
+    Mandelbulb frac(8, 8);
+    renderLoop(frac);
 
     return EXIT_SUCCESS;
 }
