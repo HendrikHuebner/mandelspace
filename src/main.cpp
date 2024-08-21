@@ -4,9 +4,9 @@
 #include "core/mandelbrot.hpp"
 
 int main() {
-    Config cfg("/home/hhuebner/Documents/mandelspace/settings.cfg");
+    Config cfg("../settings.cfg");
 
-    std::cout << cfg.test3  << std::endl;
-    render_mandelbrot();
+    renderLoop();
+
     return EXIT_SUCCESS;
 }
