@@ -7,11 +7,13 @@
 #include <iostream>
 #include <vector>
 #include "fractal.hpp"
+#include "inputs.hpp"
+#include "util.hpp"
 
 extern void cudaDraw(Fractal frac, struct cudaGraphicsResource* d_data, int width, int height);
 
-int windowWidth = 1024;
-int windowHeight = 1024;
+int windowWidth = 512;
+int windowHeight = 512;
 
 void initPBO(GLuint *pbo) {
     glGenBuffers(1, pbo);
@@ -43,10 +45,12 @@ int initWindow(GLFWwindow **window) {
     glfwMakeContextCurrent(*window);
     glewInit();
 
+    //glfwInitInputs(*window);
+
     return 0;
 }
 
-void teardownWindow(GLFWwindow *window) {
+void closeWindow(GLFWwindow *window) {
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -91,7 +95,7 @@ int renderLoop(Fractal frac) {
     cudaGraphicsUnregisterResource(pboCuda);
     glDeleteBuffers(1, &pbo);
 
-    teardownWindow(window);
+    closeWindow(window);
 
     return 0;
 }

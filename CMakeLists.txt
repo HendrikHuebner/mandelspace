@@ -5,6 +5,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(CUDA REQUIRED)
+find_package(glm REQUIRED)
 
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_70")
 
@@ -26,6 +27,7 @@ add_executable(mandelspace ${CPP_SOURCES} ${CUDA_SOURCES})
 target_link_libraries(mandelspace 
     ${OPENGL_LIBRARIES} 
     GLEW::GLEW
+    glm::glm
     glfw
     ${CUDA_LIBRARIES}
 )
