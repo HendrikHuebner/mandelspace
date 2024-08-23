@@ -19,6 +19,7 @@ set(CUDA_SOURCES
 set(CPP_SOURCES
     src/main.cpp
     src/window.hpp
+    src/ui.hpp
     src/util/Config.hpp
 )
 

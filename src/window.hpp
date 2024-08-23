@@ -9,11 +9,12 @@
 #include "fractal.hpp"
 #include "inputs.hpp"
 #include "util.hpp"
+#include "ui.hpp"
 
-extern void cudaDraw(Fractal frac, struct cudaGraphicsResource* d_data, int width, int height);
+extern void cudaDraw(Fractal frac, CameraDTO camera, struct cudaGraphicsResource* d_data, int width, int height);
 
-int windowWidth = 512;
-int windowHeight = 512;
+const int windowWidth = 1012;
+const int windowHeight = 512;
 
 void initPBO(GLuint *pbo) {
     glGenBuffers(1, pbo);
@@ -45,7 +46,7 @@ int initWindow(GLFWwindow **window) {
     glfwMakeContextCurrent(*window);
     glewInit();
 
-    //glfwInitInputs(*window);
+    glfwInitInputs(*window);
 
     return 0;
 }
@@ -72,24 +73,40 @@ int renderLoop(Fractal frac) {
     // Main loop
     int frameCount = 0;
     double prevTime = glfwGetTime();
+    double prevMeasureFPSStart = prevTime;
+
+    Camera& camera = initCamera();
 
     while (!glfwWindowShouldClose(window)) {
 
-        cudaDraw(frac, pboCuda, windowWidth, windowHeight);
+        CameraDTO camDto = {
+            .pos = {camera.position.x, camera.position.y, camera.position.z },
+            .forward = {camera.direction.x, camera.direction.y, camera.direction.z },
+            .right = {camera.right.x, camera.right.y, camera.right.z },
+            .up = {camera.up.x, camera.up.y, camera.up.z },
+        };
+
+        cudaDraw(frac, camDto, pboCuda, windowWidth, windowHeight);
         display(pbo);
+        drawCameraOrientation(camera);
+    
 
         frameCount++;
         double currentTime = glfwGetTime();
+        float deltaTime = currentTime - prevTime;
+        prevTime - currentTime;
 
-        if (currentTime - prevTime >= 1.0) {
-            double fps = frameCount / (currentTime - prevTime);
+        if (prevMeasureFPSStart - currentTime >= 1.0) {
+            double fps = frameCount / (currentTime - prevMeasureFPSStart);
             std::cout << "FPS: " << fps << std::endl;
-            prevTime = currentTime;
+            prevMeasureFPSStart = currentTime;
             frameCount = 0;
         }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+        handleKeyInputs(window, deltaTime);
+
     }
 
     cudaGraphicsUnregisterResource(pboCuda);

@@ -1,12 +1,20 @@
 #pragma once 
 
-typedef struct vec {
+
+struct vec3F {
     float x;
     float y;
     float z;
-} vec;
+};
 
-typedef struct  {
-    vec pos;
-    vec dir;
-} Ray;
+struct Ray {
+    vec3F pos;
+    vec3F dir;
+};
+
+struct CameraDTO {
+    vec3F pos;
+    vec3F forward;
+    vec3F right;
+    vec3F up;
+};
