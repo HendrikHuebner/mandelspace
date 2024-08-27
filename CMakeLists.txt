@@ -11,9 +11,6 @@ set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_70")
 
 set(CUDA_SOURCES
     src/cuda/raymarching.cu
-    src/cuda/fractals/mandelbulb.hpp
-    src/cuda/vector_ops.hpp
-    src/cuda/util.hpp
 )
 
 set(CPP_SOURCES

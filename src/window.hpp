@@ -11,7 +11,7 @@
 #include "util.hpp"
 #include "ui.hpp"
 
-extern void cudaDraw(Fractal frac, CameraDTO camera, struct cudaGraphicsResource* d_data, int width, int height);
+extern void cudaDraw(Fractal frac, CameraDTO camera, struct cudaGraphicsResource* d_data, int width, int height, double time);
 
 const int windowWidth = 1012;
 const int windowHeight = 512;
@@ -36,7 +36,7 @@ int initWindow(GLFWwindow **window) {
         return -1;
     }
 
-    *window = glfwCreateWindow(windowWidth, windowHeight, "CUDA OpenGL Interop", NULL, NULL);
+    *window = glfwCreateWindow(windowWidth, windowHeight, "Mandeldspace", NULL, NULL);
 
     if (!window) {
         glfwTerminate();
@@ -44,6 +44,8 @@ int initWindow(GLFWwindow **window) {
     }
 
     glfwMakeContextCurrent(*window);
+    glfwSwapInterval(0);
+
     glewInit();
 
     glfwInitInputs(*window);
@@ -71,13 +73,20 @@ int renderLoop(Fractal frac) {
     cudaGraphicsGLRegisterBuffer(&pboCuda, pbo, cudaGraphicsMapFlagsWriteDiscard);
 
     // Main loop
-    int frameCount = 0;
-    double prevTime = glfwGetTime();
-    double prevMeasureFPSStart = prevTime;
 
     Camera& camera = initCamera();
 
+    double t0 = glfwGetTime();
+    int frameCount = 0;
+    double prevTime = t0;
+    double prevMeasureFPSStart = t0;
+
     while (!glfwWindowShouldClose(window)) {
+    
+        frameCount++;
+        double currentTime = glfwGetTime();
+        float deltaTime = currentTime - prevTime;
+        prevTime = currentTime;
 
         CameraDTO camDto = {
             .pos = {camera.position.x, camera.position.y, camera.position.z },
@@ -86,17 +95,12 @@ int renderLoop(Fractal frac) {
             .up = {camera.up.x, camera.up.y, camera.up.z },
         };
 
-        cudaDraw(frac, camDto, pboCuda, windowWidth, windowHeight);
+        cudaDraw(frac, camDto, pboCuda, windowWidth, windowHeight, currentTime - t0);
+        
         display(pbo);
         drawCameraOrientation(camera);
-    
 
-        frameCount++;
-        double currentTime = glfwGetTime();
-        float deltaTime = currentTime - prevTime;
-        prevTime - currentTime;
-
-        if (prevMeasureFPSStart - currentTime >= 1.0) {
+        if (currentTime - prevMeasureFPSStart >= 1.0) {
             double fps = frameCount / (currentTime - prevMeasureFPSStart);
             std::cout << "FPS: " << fps << std::endl;
             prevMeasureFPSStart = currentTime;

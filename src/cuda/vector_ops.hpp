@@ -1250,6 +1250,19 @@ inline __host__ __device__ float4 fmodf(float4 a, float4 b)
 	return make_float4(fmodf(a.x, b.x), fmodf(a.y, b.y), fmodf(a.z, b.z), fmodf(a.w, b.w));
 }
 
+inline __host__ __device__ float2 fmodf(float2 a, float b)
+{
+	return make_float2(fmodf(a.x, b), fmodf(a.y, b));
+}
+inline __host__ __device__ float3 fmodf(float3 a, float b)
+{
+	return make_float3(fmodf(a.x, b), fmodf(a.y, b), fmodf(a.z, b));
+}
+inline __host__ __device__ float4 fmodf(float4 a, float b)
+{
+	return make_float4(fmodf(a.x, b), fmodf(a.y, b), fmodf(a.z, b), fmodf(a.w, b));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // absolute value
 ////////////////////////////////////////////////////////////////////////////////
