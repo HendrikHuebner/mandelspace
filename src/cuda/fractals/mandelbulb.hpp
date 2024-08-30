@@ -4,19 +4,19 @@
 #include "../util.hpp"
 
 #define THRESHOLD 4
-#define ITERATIONS 8
+#define ITERATIONS 3
 //#define POW 8.5
 
 // https://github.com/ichko/cuda-mandelbulb/blob/master/main.cu
 
-__device__ float cuda_mandelbulb_de(float p, float q, float3 pos, double time) {
+__device__ float cuda_mandelbulb_de(const int iterations, float3 pos, double time) {
 
 	float3 z = pos;
 	float dr = 1.0;
 	float r = 0.0;
 	float POW = 8; //2 + time / 5;
 	
-	for(int i = 0; i < ITERATIONS; i++) {
+	for(int i = 0; i < iterations; i++) {
 		r = length(z);
 
 		if (r > THRESHOLD) 

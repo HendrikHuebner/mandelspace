@@ -34,12 +34,11 @@ __device__ __forceinline__ static float cross(float3 pos) {
 }
 
 // https://connorahaskins.substack.com/p/ray-marching-menger-sponge-breakdown
-__device__ __forceinline__ float cuda_menger_sponge_de(int iterations, float3 pos) {
+__device__ __forceinline__ float cuda_menger_prison_de(int iterations, float3 pos) {
     const float cubeWidth = 2 * SIZE;
     const float oneThird = 1.0 / 3.0;
 
-    float t = 1.0;
-    float3 rayPos = pos;  //fmodf(pos, 1.0);
+    float3 rayPos = fabs(pos);
 
     float spongeCube = cube(rayPos);
     float mengerSpongeDist = spongeCube;

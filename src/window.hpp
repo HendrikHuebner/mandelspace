@@ -13,8 +13,8 @@
 
 extern void cudaDraw(Fractal frac, CameraDTO camera, struct cudaGraphicsResource* d_data, int width, int height, double time);
 
-const int windowWidth = 1012;
-const int windowHeight = 512;
+const int windowWidth = 1280;
+const int windowHeight = 720;
 
 void initPBO(GLuint *pbo) {
     glGenBuffers(1, pbo);
@@ -82,7 +82,6 @@ int renderLoop(Fractal frac) {
     double prevMeasureFPSStart = t0;
 
     while (!glfwWindowShouldClose(window)) {
-    
         frameCount++;
         double currentTime = glfwGetTime();
         float deltaTime = currentTime - prevTime;
