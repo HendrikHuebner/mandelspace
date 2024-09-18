@@ -7,10 +7,13 @@ find_package(glfw3 REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(glm REQUIRED)
 
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_70")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -O3 -arch=sm_70 -gencode arch=compute_70,code=sm_70 --use_fast_math ")
 
 set(CUDA_SOURCES
     src/cuda/raymarching.cu
+    src/cuda/fractals/menger_prison.cu
+    src/cuda/fractals/mandelbox.cu
+    src/cuda/fractals/mandelbulb.cu
 )
 
 set(CPP_SOURCES

@@ -1,7 +1,8 @@
 #pragma once 
 
-
 struct vec3F {
+    public:
+    
     float x;
     float y;
     float z;
@@ -17,4 +18,11 @@ struct CameraDTO {
     vec3F forward;
     vec3F right;
     vec3F up;
+};
+
+enum Fractal {
+    MANDELBULB,
+    MANDELBOX,
+    MENGER_SPONGE,
+    MENGER_PRISON
 };

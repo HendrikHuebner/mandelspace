@@ -1,9 +1,6 @@
-#pragma once
+#include "fractals.hpp"
 
-#include "../util.hpp"
-#include "../vector_ops.hpp"
-
-#define SIZE 1.0
+#define SIZE 2.0
 
 __device__ __forceinline__ static float cube(float3 rayPos) {
     const float3 corner = make_float3(SIZE, SIZE, SIZE);
@@ -17,7 +14,7 @@ __device__ __forceinline__ static float cube(float3 rayPos) {
     return length(closestToOutsideRay) + distToInsideRay;
 }
 
-__device__ __forceinline__ static float cross(float3 pos) {
+__device__ __forceinline__  static float cross(float3 pos) {
     const float3 corner = make_float3(SIZE, SIZE, SIZE);
     float3 foldedPos = fabs(pos);
     float3 ctr = foldedPos - corner;
@@ -34,11 +31,11 @@ __device__ __forceinline__ static float cross(float3 pos) {
 }
 
 // https://connorahaskins.substack.com/p/ray-marching-menger-sponge-breakdown
-__device__ __forceinline__ float cuda_menger_prison_de(int iterations, float3 pos) {
+__device__ float cuda_menger_prison_de(int iterations, float3 pos) {
     const float cubeWidth = 2 * SIZE;
     const float oneThird = 1.0 / 3.0;
 
-    float3 rayPos = fabs(pos);
+    float3 rayPos = sign(pos) * fmodf(pos, 2 * SIZE) - SIZE;
 
     float spongeCube = cube(rayPos);
     float mengerSpongeDist = spongeCube;

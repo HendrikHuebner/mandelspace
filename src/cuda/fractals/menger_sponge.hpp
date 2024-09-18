@@ -1,7 +1,4 @@
-#pragma once
-
-#include "../util.hpp"
-#include "../vector_ops.hpp"
+#include "fractals.hpp"
 
 #define SIZE 1.0
 

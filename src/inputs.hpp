@@ -18,6 +18,7 @@ struct Camera {
 
 // global instance of the camera
 static Camera camera;
+bool shouldReloadSettings = false;
 
 void updateRotation() {
     if (camera.pitch > 89.0f)
@@ -31,8 +32,8 @@ void updateRotation() {
     direction.z = sin(glm::radians(camera.pitch));
 
     camera.direction = glm::normalize(direction);
-    camera.right = glm::cross(camera.direction, glm::vec3(0.0f, 0.0f, 1.0f));
-    camera.up = glm::cross(camera.right, camera.direction);
+    camera.right = glm::normalize(glm::cross(camera.direction, glm::vec3(0.0f, 0.0f, 1.0f)));
+    camera.up = glm::normalize(glm::cross(camera.right, camera.direction));
 }
 
 void handleKeyInputs(GLFWwindow* window, float deltaTime) {
@@ -60,6 +61,9 @@ void handleKeyInputs(GLFWwindow* window, float deltaTime) {
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+        shouldReloadSettings = true;
 
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         camera.pitch += deltaTime * cameraSpeed;

@@ -6,15 +6,14 @@
 #include <cuda_gl_interop.h>
 #include <iostream>
 #include <vector>
-#include "fractal.hpp"
 #include "inputs.hpp"
 #include "util.hpp"
 #include "ui.hpp"
 
-extern void cudaDraw(Fractal frac, CameraDTO camera, struct cudaGraphicsResource* d_data, int width, int height, double time);
+extern void cudaDraw(CameraDTO camera, struct cudaGraphicsResource* d_data, int width, int height, void *config, double time);
 
-const int windowWidth = 1280;
-const int windowHeight = 720;
+const int windowWidth = 1600;
+const int windowHeight = 900;
 
 void initPBO(GLuint *pbo) {
     glGenBuffers(1, pbo);
@@ -59,7 +58,7 @@ void closeWindow(GLFWwindow *window) {
 }
 
 
-int renderLoop(Fractal frac) {
+int renderLoop(Config *config, std::string path) {
     GLFWwindow *window;
 
     if (initWindow(&window)) {
@@ -82,6 +81,12 @@ int renderLoop(Fractal frac) {
     double prevMeasureFPSStart = t0;
 
     while (!glfwWindowShouldClose(window)) {
+        if (shouldReloadSettings) {
+            delete config;
+            config = new Config(ConfigParser(path));
+            shouldReloadSettings = false;
+        }
+
         frameCount++;
         double currentTime = glfwGetTime();
         float deltaTime = currentTime - prevTime;
@@ -93,8 +98,8 @@ int renderLoop(Fractal frac) {
             .right = {camera.right.x, camera.right.y, camera.right.z },
             .up = {camera.up.x, camera.up.y, camera.up.z },
         };
-
-        cudaDraw(frac, camDto, pboCuda, windowWidth, windowHeight, currentTime - t0);
+        
+        cudaDraw(camDto, pboCuda, windowWidth, windowHeight, config, currentTime - t0);
         
         display(pbo);
         drawCameraOrientation(camera);
@@ -111,6 +116,8 @@ int renderLoop(Fractal frac) {
         handleKeyInputs(window, deltaTime);
 
     }
+
+    delete config;
 
     cudaGraphicsUnregisterResource(pboCuda);
     glDeleteBuffers(1, &pbo);

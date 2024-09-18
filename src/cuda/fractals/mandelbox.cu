@@ -1,11 +1,6 @@
-#pragma once
+#include "fractals.hpp"
 
-#include "../util.hpp"
-#include "../vector_ops.hpp"
-
-
-
-__device__ __forceinline__ float cuda_mandelbox_de(int iterations,  float mu, float fR, float mR, float3 pos) {
+__device__ float cuda_mandelbox_de(int iterations,  float mu, float fR, float mR, float3 pos) {
 	float3 z = pos;
 	float dr = mu;
 

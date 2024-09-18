@@ -66,6 +66,9 @@
         "format": "cpp",
         "__nullptr": "cpp",
         "__node_handle": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "__functional_base": "cpp",
+        "locale": "cpp",
+        "set": "cpp"
     }
 }
